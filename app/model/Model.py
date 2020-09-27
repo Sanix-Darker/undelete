@@ -27,6 +27,9 @@ class Model:
     def set_collection(self, collection_name="model_example"):
         self.collection = DATABASE(DATABASE_NAME).db[collection_name]
 
+    def set_json(self, json):
+        self.json = json
+
     def save(self):
         if self.validate_input(self.json)[0]:
             self.collection.insert(self.json)

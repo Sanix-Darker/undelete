@@ -1,10 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 import json
+
+from app.model import UnDelete , WatchMe
 from app.settings import HOST
 
 
-def get_origin_tweet(content: str):
+def get_origin_tweet(url: str, content: str):
     """
     This method will return the origin information for the tweet
 
@@ -33,6 +35,7 @@ def get_origin_tweet(content: str):
         .find("div", {"class": "media"}).find("img")["src"]
 
     return {
+        "link": url,
         "avatar": origin_avatar,
         "media": origin_media,
         "author-link": origin_author_link,
@@ -79,10 +82,10 @@ def get_replies(content: str):
     replies_json = []
 
     replies = BeautifulSoup(content, "html.parser") \
-        .find("div", {"class": "replies"}) \
-        .find_all("table", {
-            "class": "tweet"
-        })
+    .find("div", {"class": "replies"}) \
+    .find_all("table", {
+        "class": "tweet"
+    })
 
     for item in replies:
         
@@ -110,16 +113,14 @@ def get_tweet_and_comments(url: str, chat_id:str):
     """
     # We make the request
     r = requests.get(HOST + url.split("twitter.com/")[1])
-    
-    # with open("rf.html", "w") as ffr:
-    #     ffr.write(r.content.decode())
 
     # We return results as object
     return {
         "chat_id": chat_id,
-        "origin": get_origin_tweet(r.content.decode()),
+        "origin": get_origin_tweet(url, r.content.decode()),
         "replies": get_replies(r.content.decode()),
     }
+
 
 def watch_this(url: str, chat_id: str):
     """
@@ -127,14 +128,90 @@ def watch_this(url: str, chat_id: str):
 
     """
 
-    # with open("s.json", "w", encoding='utf-8') as frr:
-    #     json.dump(
-    #         get_tweet_and_comments(url, chat_id), 
-    #         frr, 
-    #         ensure_ascii=False, 
-    #         indent=4
-    #     )
+    result = get_tweet_and_comments(url, chat_id)
 
-    get_tweet_and_comments(url, chat_id)
-    
+    Ud = UnDelete.UnDelete
+    Wm = WatchMe.WatchMe
+
+    # Save on MongoDb
+    # we check if that Undelete already exist
+    undelete_fetch = list(Ud().find_by({
+        "origin": result["origin"]
+    }))
+
+    # if NO, we save it
+    if len(undelete_fetch) == 0:
+        print("{+} Saving undelete_fetch: ", undelete_fetch)
+        ud = Ud(result)
+        ud.save()
+
+        print("[+] Successfully saved...")
+
+        # We fetch the object id
+        ud_id = str(list(Ud().find_by({
+            "origin": result["origin"]
+        }))[0]["_id"]).replace("ObjectId(", "").replace(")", "")
+
+        # and we save the WatchMe
+        wm = Wm({
+            "origin_id": ud_id, 
+            "origin_url": result["origin"]["link"], 
+            "chat_ids": [chat_id]
+        })
+        wm.save()
+
+        return {
+            "status": "success",
+            "message": "{}, your tweet {} is been watching by UnDelete".format(chat_id, url.split("/")[-1])
+        }
+    else:
+        print("[x] An entry allready exist for this UnDelete...")
+        # if an unDelete allready exist then let's try to save the WatchMe
+
+        # we check if that Undelete already exist
+        watchme_fetch = list(Wm().find_by({
+            "origin_url": result["origin"]["link"]
+        }))
+
+        # if NO, we save it
+        if len(watchme_fetch) == 0:
+            wm = Wm({
+                "origin_id": ud_id, 
+                "origin_url": result["origin"]["link"], 
+                "chat_ids": [chat_id]
+            })
+            wm.save()
+
+            return {
+                "status": "success",
+                "message": "{}, An entry already exist for this tweet, \
+                            {} is been watching for you !".format(chat_id, url.split("/")[-1])
+            }
+        else:
+            # let's check if the chat_id is in the array of chat_id
+            if chat_id in watchme_fetch[0]["chat_ids"]:
+                print("[-] You are already watching this tweet !")
+                return {
+                    "status": "error",
+                    "message": "{}, An entry allready exist for this UnDelete, \
+                                and you're already watching this tweet !".format(chat_id)
+                }
+            else:
+                watchme_fetch[0]["chat_ids"].append(chat_id)
+
+                print("{+} Update watchme_fetch chat-ids ")
+
+                Wm().update({
+                    "origin_url": result["origin"]["link"]
+                }, watchme_fetch[0])
+
+                return {
+                    "status": "success",
+                    "message": "{}, An entry allready exist for this tweet, \
+                                now you have been added to the watcher list (" + 
+                                len(watchme_fetch[0]["chat_ids"]) + ") !".format(chat_id)
+                }
+
+                print("[-] Saved as watcher now !")
+
     print("[+] done - - - - - - ")

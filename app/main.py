@@ -26,14 +26,10 @@ def watch():
     url = request.form.get("url")
     chat_id = request.form.get("chat_id")
 
-    # Let's watch this url
-    watch_this(url, chat_id)
-
+    # Let's try to watch this url
     # Build the response
-    response = jsonify({ 
-        'status':'success', 
-        'message': chat_id + ', your tweet "' + url.split("/")[-1] + '" is been watching by UnDelete.'
-    })
+    response = jsonify(watch_this(url, chat_id))
+
     # Let's allow all Origin requests
     response.headers.add('Access-Control-Allow-Origin', '*') # To prevent Cors issues
     return response
