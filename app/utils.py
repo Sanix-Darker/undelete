@@ -162,7 +162,7 @@ def save_undelete(url, Ud, Wm, chat_id, result, undelete_fetch):
     This method will just save the Undelete using pyMongo
 
     """
-    print("{+} Saving undelete_fetch: ", undelete_fetch)
+    print("{+} Saving undelete ")
     ud = Ud(result)
     ud.save()
 
