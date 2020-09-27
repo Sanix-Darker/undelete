@@ -6,6 +6,12 @@ from app.model import UnDelete , WatchMe
 from app.settings import HOST
 
 
+def clean_text(strr: str):
+    """
+    This will remove spaces...
+
+    """
+    return " ".join(strr.split())
 
 def get_origin_tweet(url: str, content: str):
     """
@@ -26,11 +32,11 @@ def get_origin_tweet(url: str, content: str):
 
     origin_author_name = origin_author \
         .find("span", {"class": "username"}) \
-            .get_text().replace("\n", "")
+            .get_text()
     
     origin_author_text = origin_tweet \
         .find("div", {"class": "tweet-text"}) \
-            .get_text().replace("\n", "")
+            .get_text()
 
     # Because we are not sure to always have media here
     try:
@@ -43,9 +49,9 @@ def get_origin_tweet(url: str, content: str):
         "link": url,
         "avatar": origin_avatar,
         "media": origin_media,
-        "author-link": origin_author_link,
-        "author-name": origin_author_name,
-        "tweet-text": origin_author_text,
+        "author-link": clean_text(origin_author_link),
+        "author-name": clean_text(origin_author_name),
+        "tweet-text": clean_text(origin_author_text),
     }
 
 
@@ -66,14 +72,14 @@ def extract_reply_infos(item):
 
     author_name = user_info.find("div", {
         "class": "username"
-        }).get_text().replace("\n", "")
+        }).get_text()
 
     author_link = user_info.find("a")["href"]
 
     tweet_text = item.find("td", {
         "class": "tweet-content"
     }).find("div", {"class": "tweet-text"}) \
-    .get_text().replace("\n", "")
+    .get_text()
 
     return link, avatar, author_name, author_link, tweet_text
 
@@ -103,9 +109,9 @@ def get_replies(content: str):
         replies_json.append({
             "link": link,
             "avatar": avatar,
-            "author-name": author_name,
+            "author-name": clean_text(author_name),
             "author-link": author_link,
-            "tweet-text": tweet_text
+            "tweet-text": clean_text(tweet_text)
         })
 
     return replies_json
