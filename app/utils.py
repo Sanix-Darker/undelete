@@ -2,8 +2,27 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-from app.settings import HOST
+from app.settings import HOST, TOKEN
 from hashlib import md5
+
+
+
+def send_message(chat_id: str, text: str):
+    """
+    This method will just send a message to the appropriate client
+
+    """
+    datas = {
+        "chat_id": chat_id,
+        "text": text,
+    }
+    r = requests.post(
+        "https://api.telegram.org/bot" + TOKEN + "/sendMessage", 
+        data=datas
+    )
+    
+    return True if r.status_code == 200 else False
+
 
 def clean_text(strr: str):
     """
