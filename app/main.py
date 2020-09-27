@@ -14,8 +14,6 @@ Wm = WatchMe.WatchMe
 @app.route('/', methods=['GET']) # To prevent Cors issues
 @cross_origin(supports_credentials=True)
 def index():
-    # Sent in GET requests
-    param = request.args.get('param')
     # Build the response
     response = jsonify({ 'status':'success', 'message': 'Welcome to Undelete API.' })
     # Let's allow all Origin requests
@@ -29,9 +27,15 @@ def watch():
     url = request.form.get("url")
     chat_id = request.form.get("chat_id")
 
-    # Let's try to watch this url
-    # Build the response
-    response = jsonify(watch_this(Ud, Wm, url, chat_id))
+    if url is not None and chat_id is not None:
+        # Let's try to watch this url
+        # Build the response
+        response = jsonify(watch_this(Ud, Wm, url, chat_id))
+    else:
+        response = jsonify({
+            "status": "error",
+            "message": "Please provide all necessary parameters."
+        })
 
     # Let's allow all Origin requests
     response.headers.add('Access-Control-Allow-Origin', '*') # To prevent Cors issues
@@ -44,10 +48,16 @@ def unwatchme():
     url = request.form.get("url")
     chat_id = request.form.get("chat_id")
 
-    # Let's try to watch this url
-    # Build the response
-    response = jsonify(unwatch(Ud, Wm, url, chat_id))
-
+    if url is not None and chat_id is not None:
+        # Let's try to watch this url
+        # Build the response
+        response = jsonify(unwatch(Ud, Wm, url, chat_id))
+    else:
+        response = jsonify({
+            "status": "error",
+            "message": "Please provide all necessary parameters."
+        })
+        
     # Let's allow all Origin requests
     response.headers.add('Access-Control-Allow-Origin', '*') # To prevent Cors issues
     return response
