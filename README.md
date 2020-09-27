@@ -2,16 +2,39 @@
 
 Boff... nothing special.... just a random project allowing you to get deleted tweet, that's all !
 
+[BOT-LINK](https://t.me/un_tweet_bot)
+[DEMO](https://youtu.be/FL7QXSJXA7M)
+
+
+## Requirements
+
+- python (3.x is recommended)
+
 ## How to install
 
-
-## how to launch
-
-
-## How to test
-Just by running a curl command :
+- Create your virtualenv
 ```shell
-curl -d chat_id='12345' -d url='twitter.com/tesAuthor/status/111111111111' http://127.0.0.1:1122/watch
+virtualenv -p python3 venv
+source venv/bin/activate
+```
+
+Just hit:
+```shell
+pip install -r requirements.txt
+```
+
+## How to launch
+
+To start you have the choice: 
+```shell
+# To start the bot
+sh ./bot.sh
+
+# To start the watcher
+sh ./watcher.sh
+
+# To start the api [optional if you want to use the REST service of undelete]
+sh ./rest-api.sh
 ```
 
 ## Author
