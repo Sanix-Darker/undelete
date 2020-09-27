@@ -17,7 +17,7 @@ class UnDelete(Model.Model):
             "required": ["chat-id", "origin", "origin-hash", "replies"],
             "properties": {
                 "origin": {"type": "object"},
-                "chat-id": {"type": "string"},
+                "chat-id": {"type": ["string", "integer"]},
                 "origin-hash": {"type": "string"},
                 "replies": {
                     "type": ["array", "null"],

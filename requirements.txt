@@ -7,6 +7,10 @@ pymongo
 # just for validators
 jsonschema
 
+# For the telegram bot
+setuptools
+python-telegram-bot==12.3.0
+
 # To manage configurations
 configparser
 

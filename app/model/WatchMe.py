@@ -18,7 +18,7 @@ class WatchMe(Model.Model):
             "properties": {
                 "origin-id": {"type": "string"},
                 "origin-url": {"type": "string"},
-                "replies": {
+                "chat-ids": {
                     "type": ["array", "null"],
                     "items": {
                         "type": ["string", "null"],

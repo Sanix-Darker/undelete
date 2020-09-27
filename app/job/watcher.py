@@ -55,7 +55,7 @@ def proceed():
                             "hash": md5(json.dumps(rep).encode()).hexdigest()
                         }))
 
-                        text = "Deleted tweet/comment..."
+                        text = "Deleted tweet/comment on :"
                         text += "\n{}".format(url)
                         text += "\n----"
                         text += "\n{} :".format(rep["author-name"])
