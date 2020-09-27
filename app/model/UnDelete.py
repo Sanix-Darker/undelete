@@ -1,4 +1,4 @@
-from app.model import Model
+from app.model import *
 
 
 class UnDelete(Model.Model):
@@ -7,16 +7,39 @@ class UnDelete(Model.Model):
         if json is None:
             json = {"_id": "test"}
         self.json = json
-        self.collection = self.database.get_db()["sms"]
+        
+        # We set the collection name
+        self.set_collection("undelete")
+
+        # We set our custom schema
         self.schema = {
             "type": "object",
-            "required": ["s_number", "date", "encoding", "from_number", "message", "command"],
+            "required": ["chat_id", "origin", "replies"],
             "properties": {
-                "s_number": {"type": "string"},
-                "date": {"type": "string"},
-                "encoding": {"type": "string"},
-                "from_number": {"type": "string"},
-                "message": {"type": "string"},
-                "command": {"type": "object"}
+                "origin": {"type": "object"},
+                "chat_id": {"type": "string"},
+                "replies": {
+                    "type": ["array", "null"],
+                    "items": {
+                        "type": ["object", "null"],
+                        "properties": {
+                            "link": {
+                                "type": ["string", "null"]
+                            },
+                            "avatar": {
+                                "type": ["string", "null"]
+                            },
+                            "author-name": {
+                                "type": ["string", "null"]
+                            },
+                            "author-link": {
+                                "type": ["string", "null"]
+                            },
+                            "tweet-text": {
+                                "type": ["string", "null"]
+                            },
+                        },
+                    }
+                }
             }
         }

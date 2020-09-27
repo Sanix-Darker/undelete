@@ -103,7 +103,7 @@ def get_replies(content: str):
     return replies_json
 
 
-def get_tweet_and_comments(url: str):
+def get_tweet_and_comments(url: str, chat_id:str):
     """
     This method will make the request
 
@@ -116,6 +116,7 @@ def get_tweet_and_comments(url: str):
 
     # We return results as object
     return {
+        "chat_id": chat_id,
         "origin": get_origin_tweet(r.content.decode()),
         "replies": get_replies(r.content.decode()),
     }
@@ -126,11 +127,14 @@ def watch_this(url: str, chat_id: str):
 
     """
 
-    with open("s.json", "w", encoding='utf-8') as frr:
-        json.dump(
-            get_tweet_and_comments(url), 
-            frr, 
-            ensure_ascii=False, 
-            indent=4
-        )
+    # with open("s.json", "w", encoding='utf-8') as frr:
+    #     json.dump(
+    #         get_tweet_and_comments(url, chat_id), 
+    #         frr, 
+    #         ensure_ascii=False, 
+    #         indent=4
+    #     )
+
+    get_tweet_and_comments(url, chat_id)
+    
     print("[+] done - - - - - - ")

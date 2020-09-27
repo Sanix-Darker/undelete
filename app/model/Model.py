@@ -1,5 +1,19 @@
-from app.model import Database
 from jsonschema import validate, ValidationError
+from pymongo import MongoClient
+
+from app.settings import *
+
+
+
+class DATABASE:
+    def __init__(self, database_name):
+        # creation of MongoClient
+        client = MongoClient()
+        # Connect with the portnumber and host
+        client = MongoClient(DATABASE_HOST)
+        # Access database
+        self.database_name = database_name
+        self.db = client[self.database_name]
 
 
 class Model:
@@ -7,9 +21,11 @@ class Model:
         if json is None:
             json = {"_id": "test"}
         self.json = json
-        self.database = Database
-        self.collection = self.database.get_db()["model_example"]
+        self.set_collection()
         self.schema = {}
+
+    def set_collection(self, collection_name="model_example"):
+        self.collection = DATABASE(DATABASE_NAME).db[collection_name]
 
     def save(self):
         if self.validate_input(self.json)[0]:
