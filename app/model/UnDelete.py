@@ -14,10 +14,11 @@ class UnDelete(Model.Model):
         # We set our custom schema
         self.schema = {
             "type": "object",
-            "required": ["chat_id", "origin", "replies"],
+            "required": ["chat-id", "origin", "origin-hash", "replies"],
             "properties": {
                 "origin": {"type": "object"},
-                "chat_id": {"type": "string"},
+                "chat-id": {"type": "string"},
+                "origin-hash": {"type": "string"},
                 "replies": {
                     "type": ["array", "null"],
                     "items": {

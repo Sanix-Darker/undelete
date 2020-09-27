@@ -14,9 +14,10 @@ class WatchMe(Model.Model):
         # We set our custom schema
         self.schema = {
             "type": "object",
-            "required": ["origin_id", "origin_url", "chat_ids"],
+            "required": ["origin-id", "origin-url", "chat-ids"],
             "properties": {
-                "origin_url": {"type": "string"},
+                "origin-id": {"type": "string"},
+                "origin-url": {"type": "string"},
                 "replies": {
                     "type": ["array", "null"],
                     "items": {

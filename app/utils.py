@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json
 
 from app.settings import HOST
-
+from hashlib import md5
 
 def clean_text(strr: str):
     """
@@ -124,10 +124,13 @@ def get_tweet_and_comments(url: str, chat_id:str):
     # We make the request
     r = requests.get(HOST + url.split("twitter.com/")[1])
 
+    org_tweet = get_origin_tweet(url, r.content.decode())
+    org_hash = md5(json.dumps(org_tweet).encode()).hexdigest()
     # We return results as object
     return {
-        "chat_id": chat_id,
-        "origin": get_origin_tweet(url, r.content.decode()),
+        "chat-id": chat_id,
+        "origin-hash": org_hash,
+        "origin": org_tweet,
         "replies": get_replies(r.content.decode()),
     }
 
@@ -149,9 +152,9 @@ def save_watcher(Wm, ud_id, result, chat_id):
 
     """
     wm = Wm({
-        "origin_id": ud_id, 
-        "origin_url": result["origin"]["link"], 
-        "chat_ids": [chat_id]
+        "origin-id": ud_id, 
+        "origin-url": result["origin"]["link"], 
+        "chat-ids": [chat_id]
     })
     wm.save()
 
@@ -195,7 +198,7 @@ def append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
         }
     else:
         # let's check if the chat_id is in the array of chat_id
-        if chat_id in watchme_fetch[0]["chat_ids"]:
+        if chat_id in watchme_fetch[0]["chat-ids"]:
             print("[-] You are already watching this tweet !")
 
             return {
@@ -206,17 +209,17 @@ def append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
         else:
             print("{+} Update watchme_fetch chat-ids ")
 
-            watchme_fetch[0]["chat_ids"].append(chat_id)
+            watchme_fetch[0]["chat-ids"].append(chat_id)
 
             Wm().update({
-                "origin_url": result["origin"]["link"]
+                "origin-url": result["origin"]["link"]
             }, watchme_fetch[0])
 
             return {
                 "status": "success",
                 "message": "{}, An entry allready exist for this tweet, ".format(chat_id) +
                             "now you have been added to the watcher list (" + 
-                            str(len(watchme_fetch[0]["chat_ids"])) + ") !"
+                            str(len(watchme_fetch[0]["chat-ids"])) + ") !"
             }
 
 
@@ -227,18 +230,26 @@ def remove_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
     """
     # if NO, we save it
     if len(watchme_fetch) != 0:
-        # We fetch the object id
-        # and we save the WatchMe
-        watchme_fetch[0]["chat_ids"].remove(chat_id)
 
-        Wm().update({
-            "origin_url": result["origin"]["link"]
-        }, watchme_fetch[0])
+        if chat_id in watchme_fetch[0]["chat-ids"]:
+            # We fetch the object id
+            # and we save the WatchMe
+            watchme_fetch[0]["chat-ids"].remove(chat_id)
 
-        return {
-            "status": "success",
-            "message": "{}, you have been removed from watcher for this tweet, ".format(chat_id)
-        }
+            Wm().update({
+                "origin-url": result["origin"]["link"]
+            }, watchme_fetch[0])
+
+            return {
+                "status": "success",
+                "message": "{}, you have been removed from watcher for this tweet, ".format(chat_id)
+            }
+        else:
+            # not there
+            return {
+                "status": "success",
+                "message": "{}, you're not watching this tweet at the moment, ".format(chat_id)
+            }
     else:
         # not there
         return {
@@ -253,7 +264,7 @@ def unwatch(Ud, Wm, url: str, chat_id: str):
 
     # we check if that Undelete already exist
     watchme_fetch = list(Wm().find_by({
-    "origin_url": result["origin"]["link"]
+        "origin-url": result["origin"]["link"]
     }))
     
     return remove_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch)
@@ -265,8 +276,6 @@ def watch_this(Ud, Wm, url: str, chat_id: str):
 
     """
     result = get_tweet_and_comments(url, chat_id)
-
-
 
     # Save on MongoDb
     # we check if that Undelete already exist
@@ -283,7 +292,7 @@ def watch_this(Ud, Wm, url: str, chat_id: str):
 
         # we check if that Undelete already exist
         watchme_fetch = list(Wm().find_by({
-            "origin_url": result["origin"]["link"]
+            "origin-url": result["origin"]["link"]
         }))
 
         return append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch)
