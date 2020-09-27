@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-from app.model import UnDelete , WatchMe
 from app.settings import HOST
 
 
@@ -221,15 +220,53 @@ def append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
             }
 
 
-def watch_this(url: str, chat_id: str):
+def remove_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
+    """
+    We remove a new watcher
+
+    """
+    # if NO, we save it
+    if len(watchme_fetch) != 0:
+        # We fetch the object id
+        # and we save the WatchMe
+        watchme_fetch[0]["chat_ids"].remove(chat_id)
+
+        Wm().update({
+            "origin_url": result["origin"]["link"]
+        }, watchme_fetch[0])
+
+        return {
+            "status": "success",
+            "message": "{}, you have been removed from watcher for this tweet, ".format(chat_id)
+        }
+    else:
+        # not there
+        return {
+            "status": "success",
+            "message": "{}, you're not watching this tweet at the moment, ".format(chat_id)
+        }
+
+
+def unwatch(Ud, Wm, url: str, chat_id: str):
+
+    result = get_tweet_and_comments(url, chat_id)
+
+    # we check if that Undelete already exist
+    watchme_fetch = list(Wm().find_by({
+    "origin_url": result["origin"]["link"]
+    }))
+    
+    return remove_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch)
+
+
+def watch_this(Ud, Wm, url: str, chat_id: str):
     """
     Start watching this tweet...
 
     """
     result = get_tweet_and_comments(url, chat_id)
 
-    Ud = UnDelete.UnDelete
-    Wm = WatchMe.WatchMe
+
 
     # Save on MongoDb
     # we check if that Undelete already exist
