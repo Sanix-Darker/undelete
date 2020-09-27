@@ -1,0 +1,19 @@
+# To fetch results and parse results
+requests
+beautifulsoup4
+
+# to communicate with mongoDB
+pymongo
+# just for validators
+jsonschema
+
+# For telegram-bot
+setuptools
+python-telegram-bot==12.3.0
+
+# To manage configurations
+configparser
+
+# For the res-api service
+flask
+flask_cors

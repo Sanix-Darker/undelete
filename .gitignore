@@ -1,0 +1,8 @@
+venv
+config.txt
+*.json
+*.html
+.history
+.vscode
+*_pycache__
+*.pyc
