@@ -1,6 +1,6 @@
 # UnDelete
 
-Boff... nothing special.... just a random project allowing you to get deleted tweet, that's all !
+Boff... nothing special.... Just a random project allowing you to get deleted comments/tweets, that's all !
 
 [BOT-LINK](https://t.me/un_tweet_bot)
 [DEMO](https://youtu.be/FL7QXSJXA7M)
