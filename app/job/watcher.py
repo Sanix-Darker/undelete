@@ -43,5 +43,5 @@ def proceed():
                 print("[+] Nothing to do...")
 
 while True:
-    time.sleep(30)
     proceed()
+    time.sleep(30)
