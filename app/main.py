@@ -28,9 +28,16 @@ def watch():
     chat_id = request.form.get("chat_id")
 
     if url is not None and chat_id is not None:
-        # Let's try to watch this url
-        # Build the response
-        response = jsonify(watch_this(Ud, Wm, url, chat_id))
+        # Let's check the link
+        if dump_tweet_link_validation(url):
+            # Let's try to watch this url
+            # Build the response
+            response = jsonify(watch_this(Ud, Wm, url, chat_id))
+        else:
+            response = jsonify({
+                "status": "error",
+                "message": "Your tweet link seems to be not valid, please check it again."
+            })
     else:
         response = jsonify({
             "status": "error",
@@ -49,15 +56,22 @@ def unwatchme():
     chat_id = request.form.get("chat_id")
 
     if url is not None and chat_id is not None:
-        # Let's try to watch this url
-        # Build the response
-        response = jsonify(unwatch(Ud, Wm, url, chat_id))
+        # Let's check the link
+        if dump_tweet_link_validation(url):
+            # Let's try to watch this url
+            # Build the response
+            response = jsonify(unwatch(Ud, Wm, url, chat_id))
+        else:
+            response = jsonify({
+                "status": "error",
+                "message": "your tweet link seems to be not valid, please check it again."
+            })
     else:
         response = jsonify({
             "status": "error",
             "message": "Please provide all necessary parameters."
         })
-        
+
     # Let's allow all Origin requests
     response.headers.add('Access-Control-Allow-Origin', '*') # To prevent Cors issues
     return response

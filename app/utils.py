@@ -24,12 +24,29 @@ def send_message(chat_id: str, text: str):
     return True if r.status_code == 200 else False
 
 
+def dump_tweet_link_validation(url):
+    """
+    This is a dump check for a valid tweet link lol...
+
+    """
+    if "twitter.com" in url and "status" in url:
+        # We check if it's a valid link pingable lol
+        r = requests.get(url)
+        if r.status_code == 200:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
 def clean_text(strr: str):
     """
     This will remove spaces...
 
     """
     return " ".join(strr.split())
+
 
 def get_origin_tweet(url: str, content: str):
     """
