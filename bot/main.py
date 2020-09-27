@@ -30,9 +30,10 @@ def echo_callback(bot, update):
         chat_id = update.message.chat_id
 
         result = watch_this(Ud, Wm, srch, str(chat_id))
+
         bot.send_message(
             chat_id=update.message.chat_id,
-            text="Ok ok,\n@" + update.message["chat"]["username"] + "-" + result["message"]
+            text="Ok ok,\n" + result["message"]
         )
     else:
         bot.send_message(

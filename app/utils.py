@@ -210,6 +210,8 @@ def save_undelete(url, Ud, Wm, chat_id, result, undelete_fetch):
     # and we save the WatchMe
     save_watcher(Wm, get_ud_id(Ud, result), result, chat_id)
     
+    print("[+] returning the message...")
+    
     return {
         "status": "success",
         "message": "{}, your tweet {} is been watching by UnDelete".format(chat_id, url.split("/")[-1])

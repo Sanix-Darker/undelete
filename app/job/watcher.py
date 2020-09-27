@@ -86,5 +86,9 @@ def proceed():
             print("[+] Nothing to do...")
 
 while True:
-    proceed()
+    try:
+        # always run lol 
+        proceed()
+    except:
+        pass
     time.sleep(10)
