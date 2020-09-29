@@ -3,6 +3,7 @@
 Boff... nothing special.... Just a random project allowing you to get deleted comments/tweets, that's all !
 
 [BOT-LINK](https://t.me/un_tweet_bot)
+[TWEET-LINK](https://twitter.com/sanixdarker/status/1310290806381703168)
 [DEMO](https://youtu.be/FL7QXSJXA7M)
 
 
@@ -11,6 +12,8 @@ Boff... nothing special.... Just a random project allowing you to get deleted co
 - python (3.x is recommended)
 
 ## How to install
+
+- Copy `example.config.txt` to `config.txt` and set correct/appropriate parameters.
 
 - Create your virtualenv
 ```shell
