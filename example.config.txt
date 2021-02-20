@@ -4,8 +4,8 @@ DATABASE_HOST = mongodb://127.0.0.1:27017
 DATABASE_NAME = ---------
 
 # For fetching on  Twitter api
-API_KEY = ----------------------
-API_KEY_SECRET = ---------------------------------------------
+BEARER_TOKEN = ----------------
+CSRF_TOKEN = ----------------------------
 
 # For the Telegram Bot
 TOKEN = ---------------------------------------------

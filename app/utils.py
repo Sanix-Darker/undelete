@@ -1,8 +1,9 @@
 import requests
-from bs4 import BeautifulSoup
 import json
+from os import system
 
 from bot.settings import TOKEN
+from app.settings import BEARER_TOKEN, CSRF_TOKEN, cookies, queue_reply_url
 from hashlib import md5
 
 
@@ -47,107 +48,58 @@ def clean_text(strr: str):
     return " ".join(strr.split())
 
 
-def get_origin_tweet(url: str, content: str):
+def get_origin_tweet(tweet_id):
     """
     This method will return the origin information for the tweet
 
     """
-    origin_tweet = BeautifulSoup(content, "html.parser") \
-        .find("table", {
-        "class": "main-tweet"
-    })
 
-    origin_avatar = origin_tweet.find("td", {"class": "avatar"}) \
-        .find("img")["src"]
-    origin_author = origin_tweet \
-        .find("a", {"class": "user-info-username"})
-
-    origin_author_link = origin_author["href"]
-
-    origin_author_name = origin_author \
-        .find("span", {"class": "username"}) \
-        .get_text()
-
-    origin_author_text = origin_tweet \
-        .find("div", {"class": "tweet-text"}) \
-        .get_text()
-
-    # Because we are not sure to always have media here
-    try:
-        origin_media = origin_tweet.find("td", {"class": "tweet-content"}) \
-            .find("div", {"class": "media"}).find("img")["src"]
-    except Exception as es:
-        origin_media = ""
+    headers = {'Authorization': 'Bearer ' + BEARER_TOKEN}
+    api_url = "https://api.twitter.com/1.1/statuses/show.json?id=" + tweet_id
+    response = requests.get(api_url, headers=headers)
+    results = response.json()
 
     return {
-        "link": url,
-        "avatar": origin_avatar,
-        "media": origin_media,
-        "author-link": clean_text(origin_author_link),
-        "author-name": clean_text(origin_author_name),
-        "tweet-text": clean_text(origin_author_text),
+        "avatar": results["user"]["profile_image_url_https"],
+        "media": "",
+        "author-link": "https://twitter.com/" + results["user"]["screen_name"],
+        "author-name": results["user"]["name"],
+        "tweet-text": results["text"]
     }
 
 
-def extract_reply_infos(item):
-    """
-    Just a basic formater for a reply
-
-    """
-    link = item["href"]
-
-    avatar = item.find("td", {
-        "class": "avatar"
-    }).find("img")["src"]
-
-    user_info = item.find("td", {
-        "class": "user-info"
-    })
-
-    author_name = user_info.find("div", {
-        "class": "username"
-    }).get_text()
-
-    author_link = user_info.find("a")["href"]
-
-    tweet_text = item.find("td", {
-        "class": "tweet-content"
-    }).find("div", {"class": "tweet-text"}) \
-        .get_text()
-
-    return link, avatar, author_name, author_link, tweet_text
-
-
-def get_replies(content: str):
+def get_replies(tweet_id):
     """
     This method will return replies from that tweet
 
     """
+    command = "curl -s 'https://twitter.com/i/api/2/timeline/conversation/" + tweet_id + ".json?" \
+              + queue_reply_url \
+              + "   -H 'authority: twitter.com'   -H 'authorization: Bearer " + BEARER_TOKEN \
+              + "'   -H 'x-twitter-client-language: en'   -H 'x-csrf-token: " + CSRF_TOKEN \
+              + "'   -H 'x-twitter-auth-type: OAuth2Session'   -H 'x-twitter-active-user: yes'" \
+              + "   -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)" \
+              + " Chrome/88.0.4324.150 Safari/537.36'   -H 'accept: */*'   -H 'sec-fetch-site: same-origin'" \
+              + "   -H 'sec-fetch-mode: cors'   -H 'sec-fetch-dest: empty'   " \
+              + "-H 'referer: https://twitter.com/Florent_GT/status/" + tweet_id + "'" \
+              + "   -H 'accept-language: en-US,en;q=0.9,fr;q=0.8' -H 'cookie: " + cookies + "' --compressed > out.json"
 
-    replies_json = []
+    system(command)
+    replies_tweets = json.loads(open("./out.json").read())["globalObjects"]["tweets"]
+    replies_users = json.loads(open("./out.json").read())["globalObjects"]["users"]
 
-    replies = BeautifulSoup(content, "html.parser") \
-        .find("div", {"class": "replies"}) \
-        .find_all("table", {
-        "class": "tweet"
-    })
-
-    for item in replies:
-        (link,
-         avatar,
-         author_name,
-         author_link,
-         tweet_text) = extract_reply_infos(item)
-
-        replies_json.append({
-            "link": link,
-            "avatar": avatar,
-            "author-name": clean_text(author_name),
-            "author-link": author_link,
-            "tweet-text": clean_text(tweet_text)
+    objs = []
+    for r in replies_tweets:
+        author = replies_users[replies_tweets[r]["user_id_str"]]
+        objs.append({
+            "link": "https://twitter.com/status/" + replies_tweets[r]["id_str"],
+            "author_link": "https://twitter.com/" + author["screen_name"],
+            "author_name": author["name"],
+            "avatar": author["profile_image_url_https"],
+            "tweet_text": replies_tweets[r]["full_text"]
         })
 
-    return replies_json
+    return objs
 
 
 def get_tweet_and_comments(url: str, chat_id: str):
@@ -155,17 +107,17 @@ def get_tweet_and_comments(url: str, chat_id: str):
     This method will make the request
 
     """
-    # We make the request
-    r = requests.get(HOST + url.split("twitter.com/")[1])
+    # We extract the tweet id
+    tweet_id = url.split("/")[-1]
 
-    org_tweet = get_origin_tweet(url, r.content.decode())
+    org_tweet = get_origin_tweet(tweet_id)
     org_hash = md5(json.dumps(org_tweet).encode()).hexdigest()
     # We return results as object
     return {
         "chat-id": chat_id,
         "origin-hash": org_hash,
         "origin": org_tweet,
-        "replies": get_replies(r.content.decode()),
+        "replies": get_replies(tweet_id),
     }
 
 

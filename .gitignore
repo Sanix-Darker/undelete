@@ -7,3 +7,6 @@ config.txt
 *_pycache__
 *.pyc
 .idea
+r.html
+reply.py
+t.py

@@ -109,7 +109,7 @@ def proceed():
             else:
                 print("[+] Nothing to do...")
         except Exception as es:
-            pass
+            print(es)
 
 
 while True:
@@ -118,5 +118,5 @@ while True:
         proceed()
     except Exception as es:
         print(es)
-        pass
+
     time.sleep(30)
