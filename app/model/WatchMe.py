@@ -1,4 +1,4 @@
-from app.model import *
+from app.model import Model
 
 
 class WatchMe(Model.Model):

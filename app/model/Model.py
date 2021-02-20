@@ -4,7 +4,6 @@ from pymongo import MongoClient
 from app.settings import *
 
 
-
 class DATABASE:
     def __init__(self, database_name):
         # creation of MongoClient
@@ -17,7 +16,8 @@ class DATABASE:
 
 
 class Model:
-    def __init__(self, json=None):
+    def __init__(self, json=None, collection_name=None):
+        self.collection = DATABASE(DATABASE_NAME).db[collection_name]
         if json is None:
             json = {"_id": "test"}
         self.json = json
@@ -25,7 +25,7 @@ class Model:
         self.schema = {}
 
     def set_collection(self, collection_name="model_example"):
-        self.collection = DATABASE(DATABASE_NAME).db[collection_name]
+        pass
 
     def set_json(self, json):
         self.json = json

@@ -6,3 +6,7 @@ config.txt
 .vscode
 *_pycache__
 *.pyc
+.idea
+r.html
+reply.py
+t.py
