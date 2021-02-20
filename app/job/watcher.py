@@ -3,13 +3,14 @@
 
 # else, we try to get those elements that are not present
 
+import sys
+import time
+import traceback
+from hashlib import md5
+
 # Then we send that on all watcher in the Watchme of the Undelete
 from app.model import UnDelete, WatchMe, Sends
 from app.utils import *
-from hashlib import md5
-import time
-import sys, traceback
-
 
 Ud = UnDelete.UnDelete
 Wm = WatchMe.WatchMe
@@ -105,7 +106,6 @@ def proceed():
                 for rep in u["replies"]:
                     # if that reply is not in the result then maybe it have been deleted
                     if rep not in result["replies"]:
-                        print("rep: ", rep)
                         # we send the message to all watcher for the reply that have been deleted
                         print("[-] Missing reply '{}' from '{}' ".format(rep["tweet-text"], rep["author-name"]))
 
@@ -118,6 +118,8 @@ def proceed():
                             send_message_and_update_db(w, rep, text)
             else:
                 print("[+] Nothing to do...")
+
+            time.sleep(5)
         except Exception as es:
             get_trace()
 
@@ -129,4 +131,4 @@ while True:
     except Exception as es:
         get_trace()
 
-    time.sleep(15)
+    time.sleep(30)
