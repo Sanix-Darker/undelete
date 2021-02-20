@@ -2,9 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-from app.settings import HOST, TOKEN
+from bot.settings import TOKEN
 from hashlib import md5
-
 
 
 def send_message(chat_id: str, text: str):
@@ -17,10 +16,10 @@ def send_message(chat_id: str, text: str):
         "text": text,
     }
     r = requests.post(
-        "https://api.telegram.org/bot" + TOKEN + "/sendMessage", 
+        "https://api.telegram.org/bot" + TOKEN + "/sendMessage",
         data=datas
     )
-    
+
     return True if r.status_code == 200 else False
 
 
@@ -55,8 +54,8 @@ def get_origin_tweet(url: str, content: str):
     """
     origin_tweet = BeautifulSoup(content, "html.parser") \
         .find("table", {
-            "class": "main-tweet"
-        })
+        "class": "main-tweet"
+    })
 
     origin_avatar = origin_tweet.find("td", {"class": "avatar"}) \
         .find("img")["src"]
@@ -67,11 +66,11 @@ def get_origin_tweet(url: str, content: str):
 
     origin_author_name = origin_author \
         .find("span", {"class": "username"}) \
-            .get_text()
+        .get_text()
 
     origin_author_text = origin_tweet \
         .find("div", {"class": "tweet-text"}) \
-            .get_text()
+        .get_text()
 
     # Because we are not sure to always have media here
     try:
@@ -107,14 +106,14 @@ def extract_reply_infos(item):
 
     author_name = user_info.find("div", {
         "class": "username"
-        }).get_text()
+    }).get_text()
 
     author_link = user_info.find("a")["href"]
 
     tweet_text = item.find("td", {
         "class": "tweet-content"
     }).find("div", {"class": "tweet-text"}) \
-    .get_text()
+        .get_text()
 
     return link, avatar, author_name, author_link, tweet_text
 
@@ -128,18 +127,17 @@ def get_replies(content: str):
     replies_json = []
 
     replies = BeautifulSoup(content, "html.parser") \
-    .find("div", {"class": "replies"}) \
-    .find_all("table", {
+        .find("div", {"class": "replies"}) \
+        .find_all("table", {
         "class": "tweet"
     })
 
     for item in replies:
-        
-        (link, 
-        avatar, 
-        author_name, 
-        author_link, 
-        tweet_text) = extract_reply_infos(item)
+        (link,
+         avatar,
+         author_name,
+         author_link,
+         tweet_text) = extract_reply_infos(item)
 
         replies_json.append({
             "link": link,
@@ -152,7 +150,7 @@ def get_replies(content: str):
     return replies_json
 
 
-def get_tweet_and_comments(url: str, chat_id:str):
+def get_tweet_and_comments(url: str, chat_id: str):
     """
     This method will make the request
 
@@ -188,8 +186,8 @@ def save_watcher(Wm, ud_id, result, chat_id):
 
     """
     wm = Wm({
-        "origin-id": ud_id, 
-        "origin-url": result["origin"]["link"], 
+        "origin-id": ud_id,
+        "origin-url": result["origin"]["link"],
         "chat-ids": [chat_id]
     })
     wm.save()
@@ -209,9 +207,9 @@ def save_undelete(url, Ud, Wm, chat_id, result, undelete_fetch):
     # We fetch the object id 
     # and we save the WatchMe
     save_watcher(Wm, get_ud_id(Ud, result), result, chat_id)
-    
+
     print("[+] returning the message...")
-    
+
     return {
         "status": "success",
         "message": "{}, your tweet {} is been watching by UnDelete".format(chat_id, url.split("/")[-1])
@@ -232,7 +230,7 @@ def append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
         return {
             "status": "success",
             "message": "{}, An entry already exist for this tweet, ".format(chat_id) +
-                        "{} is been watching for you !".format(url.split("/")[-1])
+                       "{} is been watching for you !".format(url.split("/")[-1])
         }
     else:
         # let's check if the chat_id is in the array of chat_id
@@ -242,7 +240,7 @@ def append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
             return {
                 "status": "error",
                 "message": "{}, An entry allready exist for this UnDelete, ".format(chat_id) +
-                            "and you're already watching this tweet !"
+                           "and you're already watching this tweet !"
             }
         else:
             print("{+} Update watchme_fetch chat-ids ")
@@ -256,8 +254,8 @@ def append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
             return {
                 "status": "success",
                 "message": "{}, An entry allready exist for this tweet, ".format(chat_id) +
-                            "now you have been added to the watcher list (" + 
-                            str(len(watchme_fetch[0]["chat-ids"])) + ") !"
+                           "now you have been added to the watcher list (" +
+                           str(len(watchme_fetch[0]["chat-ids"])) + ") !"
             }
 
 
@@ -297,14 +295,13 @@ def remove_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch):
 
 
 def unwatch(Ud, Wm, url: str, chat_id: str):
-
     result = get_tweet_and_comments(url, chat_id)
 
     # we check if that Undelete already exist
     watchme_fetch = list(Wm().find_by({
         "origin-url": result["origin"]["link"]
     }))
-    
+
     return remove_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch)
 
 
@@ -335,4 +332,3 @@ def watch_this(Ud, Wm, url: str, chat_id: str):
 
         return append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch)
 
-    print("[+] done - - - - - - ")

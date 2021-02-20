@@ -9,11 +9,9 @@ from app.utils import *
 from hashlib import md5
 import time
 
-
 Ud = UnDelete.UnDelete
 Wm = WatchMe.WatchMe
 Sds = Sends.Sends
-
 
 
 def build_message(rep, url):
@@ -110,14 +108,15 @@ def proceed():
                             send_message_and_update_db(w, rep, text)
             else:
                 print("[+] Nothing to do...")
-        except:
+        except Exception as es:
             pass
+
 
 while True:
     try:
         # always run lol
         proceed()
-    except:
+    except Exception as es:
+        print(es)
         pass
-    time.sleep(15)
-
+    time.sleep(30)
