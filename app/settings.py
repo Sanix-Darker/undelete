@@ -10,20 +10,20 @@ DATABASE_NAME = conf.get("ud", "DATABASE_NAME")
 BEARER_TOKEN = conf.get("ud", "BEARER_TOKEN")
 CSRF_TOKEN = conf.get("ud", "CSRF_TOKEN")
 
-cookies = "_ga=GA1.2.1810982598.1577183899;" \
-          + " dnt=1; ads_prefs=\"HBISAAA=\"; kdt=uqASzquDtfI27qZZVKXeEvzQ3tRwkIEGduoM4DZH; csrf_same_site_set=1;" \
-          + " personalization_id=\"v1_emLvayd91BE3Th5cjAyolw==\"; " \
-          + "cd_user_id=1754006239910-0f8ab290908b4c-397c095c-1fa400-1754006239a89; " \
-          + "remember_checked_on=1; auth_token=a7ea39ac616ff10caca4e8b86810ea661687c487; " \
-          + "ct0=f685ee313ea057e7e1347acd20a4dce1c2432a9b1b11154bf85740f1841213a0b4e514fbd3" \
-          + "734fb6305223fc94c68d6adf597aaa4f6624e2f26c9f6a4b12027946060f7fcfbcb6644f68f501628e26ec;" \
-          + " guest_id=v1%3A160460719347617574; des_opt_in=Y; twid=u%3D1055957666185601024; " \
-          + "night_mode=1; lang=en; _twitter_sess=BAh7CSIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6Ok" \
-          + "ZsYXNo%250ASGFzaHsABjoKQHVzZWR7ADoPY3JlYXRlZF9hdGwrCGogE6V3AToMY3NyZl9p%250AZCIlMTVlMTFiMTM5Z" \
-          + "DQ1ZjcyZGZjZWJmMzQ1ZDhhZmYxZWM6B2lkIiUwODg3%250AZjhhODJmNjJlYmM3YTFlOTAzYmU0NWQ3OTIxNA%253D%25" \
-          + "3D--cf8063584622af37ea6827290beb515683adc064; external_referer=padhuUp37zjgzgv1mFWxJ12Ozwit7owX" \
-          + "|0|8e8t2xd8A2w%3D; at_check=true; mbox=PC#5713b86255d94f0098c9958e70fa0fae.38_0#1677081194|" \
-          + "session#42fae65a832d4d1092914c6dc07ebae2#1613836951"
+cookies = "personalization_id=\"v1_uGBc/CVzz58okHftG19KRQ==\"; guest_id=v1%3A157857265255937117; " \
+          "_ga=GA1.2.1202687542.1578572664; kdt=1Hrr54UEdrKzkX9M36oBsA2weYp1pAnsgNZiClqz; " \
+          "mbox=session#17cea973837441a0a89e64d95306781e#1601202925|PC#17cea973837441a0a89e64d95306781e.38_0" \
+          "#1664445960; cd_user_id=174cf055ac09-0ae8f2e6d8ac2-31634645-1fa400-174cf055ac210b; " \
+          "ct0=f7d40e3f74d54bb0e474cd2480d0e16f33cb06e0b993e3a79483e2b5d85d44ec276bf6dc8af847136"\
+          "1e9bcf13f6713a5d60d1d19995f48104aa047b53ea7fc1365ec69cd63b8638da2862d6511d5f632; "\
+          "_gid=GA1.2.1360272225.1613834334; gt=1363191791344828423; "\
+          "_twitter_sess=BAh7DyIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNo%250ASGF"\
+          "zaHsABjoKQHVzZWR7ADoPY3JlYXRlZF9hdGwrCF7hq8B3AToMY3NyZl9p%250AZCIlYzU5NDJhM2Y2OWI1M"\
+          "zM0OTFiYWMwNzRiOTUzNjFhYjg6B2lkIiVhN2Ew%250ANzI1OTAxNDFlMzdkY2I0ZGRhMjU3NTg1NzdjMiIJ"\
+          "cHJycCIAOgl1c2VybCsJ%250AB5BX4mDgLhI6CHByc2kMOghwcnVsKwkHkFfiYOAuEjoIcHJsIitKQ29WOXQ"\
+          "1%250AQUtMV1NIN1BrdGtxYWw4dWl6UXlRckNueGlhOHdRMzoIcHJhaQY%253D--0d88904a9e86b706ed86aa"\
+          "d5d9a12f4ad0fe82bd; ads_prefs=\"HBERAAA=\"; remember_checked_on=1; twid=u%3D1310231248330264583;"\
+          " auth_token=7cc8d69637b853809fb5cfe6485107ff75d33017; lang=en' -H 'TE: Trailers' "
 
 queue_reply_url = "include_profile_interstitial_type=1&include_blocking=1&include_blocked_by=1" \
           + "&include_followed_by=1&include_want_retweets=1&include_mute_edge=1&include_can_dm=1" \
