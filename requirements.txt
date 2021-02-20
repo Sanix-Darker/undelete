@@ -1,6 +1,5 @@
 # To fetch results and parse results
 requests
-beautifulsoup4
 
 # to communicate with mongoDB
 pymongo
@@ -14,6 +13,6 @@ python-telegram-bot==12.3.0
 # To manage configurations
 configparser
 
-# For the res-api service
-flask
-flask_cors
+# For the res-api service, not necessary for now
+# flask
+# flask_cors

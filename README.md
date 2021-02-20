@@ -2,10 +2,9 @@
 
 Boff... nothing special.... Just a random project allowing you to get deleted comments/tweets, that's all !
 
-[BOT-LINK](https://t.me/un_tweet_bot)
-[TWEET-LINK](https://twitter.com/sanixdarker/status/1310290806381703168)
+[BOT-LINK](https://t.me/un_tweet_bot) \
+[TWEET-LINK](https://twitter.com/sanixdarker/status/1310290806381703168) \
 [DEMO](https://youtu.be/FL7QXSJXA7M)
-
 
 ## Requirements
 
