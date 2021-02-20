@@ -29,10 +29,11 @@ def dump_tweet_link_validation(url):
     This is a dump check for a valid tweet link lol...
 
     """
+
     if "twitter.com" in url and "status" in url:
         # We check if it's a valid link pingable lol
         r = requests.get(url)
-        if r.status_code == 200:
+        if r.status_code == 200 or r.status_code == 400:
             return True
         else:
             return False
@@ -64,6 +65,7 @@ def get_origin_tweet(tweet_id):
         "media": "",
         "author-link": "https://twitter.com/" + results["user"]["screen_name"],
         "author-name": results["user"]["name"],
+        "link": "https://twitter.com/" + results["user"]["screen_name"] + "/" + tweet_id,
         "tweet-text": results["text"]
     }
 
@@ -93,10 +95,10 @@ def get_replies(tweet_id):
         author = replies_users[replies_tweets[r]["user_id_str"]]
         objs.append({
             "link": "https://twitter.com/status/" + replies_tweets[r]["id_str"],
-            "author_link": "https://twitter.com/" + author["screen_name"],
-            "author_name": author["name"],
+            "author-link": "https://twitter.com/" + author["screen_name"],
+            "author-name": author["name"],
             "avatar": author["profile_image_url_https"],
-            "tweet_text": replies_tweets[r]["full_text"]
+            "tweet-text": replies_tweets[r]["full_text"]
         })
 
     return objs
@@ -108,10 +110,11 @@ def get_tweet_and_comments(url: str, chat_id: str):
 
     """
     # We extract the tweet id
-    tweet_id = url.split("/")[-1]
+    tweet_id = url.split("/")[-1].split("?")[0]
 
     org_tweet = get_origin_tweet(tweet_id)
     org_hash = md5(json.dumps(org_tweet).encode()).hexdigest()
+
     # We return results as object
     return {
         "chat-id": chat_id,
@@ -283,4 +286,3 @@ def watch_this(Ud, Wm, url: str, chat_id: str):
         }))
 
         return append_new_watcher(Ud, Wm, url, result, chat_id, watchme_fetch)
-

@@ -1,15 +1,38 @@
+from functools import wraps
+
 from telegram.ext import Updater, CommandHandler, MessageHandler
 
-from bot.settings import TOKEN
 from app.utils import *
 from app.model import UnDelete, WatchMe
+import sys, traceback
 
 Ud = UnDelete.UnDelete
 Wm = WatchMe.WatchMe
 
 
+def get_trace():
+    print("Exception in code:")
+    print("-" * 60)
+    traceback.print_exc(file=sys.stdout)
+    print("-" * 60)
+
+
 def presentation():
     print("[+] Ud-bot started on tg !")
+
+
+# A Decorator for errors
+def catch_error(f):
+    @wraps(f)
+    def wrap(bot, update):
+        try:
+            return f(bot, update)
+        except Exception as e:
+            get_trace()
+            bot.send_message(chat_id=update.message.chat_id,
+                             text="An error occured, please try later ...")
+
+    return wrap
 
 
 def start_callback(bot, update):
@@ -21,6 +44,7 @@ def start_callback(bot, update):
     )
 
 
+@catch_error
 def echo_callback(bot, update):
     print("[+] echo-callback")
 

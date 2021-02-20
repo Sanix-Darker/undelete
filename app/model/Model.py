@@ -16,8 +16,7 @@ class DATABASE:
 
 
 class Model:
-    def __init__(self, json=None, collection_name=None):
-        self.collection = DATABASE(DATABASE_NAME).db[collection_name]
+    def __init__(self, json=None):
         if json is None:
             json = {"_id": "test"}
         self.json = json
@@ -25,7 +24,7 @@ class Model:
         self.schema = {}
 
     def set_collection(self, collection_name="model_example"):
-        pass
+        self.collection = DATABASE(DATABASE_NAME).db[collection_name]
 
     def set_json(self, json):
         self.json = json
