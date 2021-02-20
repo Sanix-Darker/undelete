@@ -84,7 +84,7 @@ def get_replies(tweet_id):
               + " Chrome/88.0.4324.150 Safari/537.36'   -H 'accept: */*'   -H 'sec-fetch-site: same-origin'" \
               + "   -H 'sec-fetch-mode: cors'   -H 'sec-fetch-dest: empty'   " \
               + "-H 'referer: https://twitter.com/Florent_GT/status/" + tweet_id + "'" \
-              + "   -H 'accept-language: en-US,en;q=0.9,fr;q=0.8' -H 'cookie: " + cookies + "' --compressed > out.json"
+              + "   -H 'accept-language: en-US,en;q=0.9,fr;q=0.8' -H 'cookie: " + cookies + " --compressed > out.json"
 
     system(command)
     replies_tweets = json.loads(open("./out.json").read())["globalObjects"]["tweets"]
