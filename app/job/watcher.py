@@ -8,10 +8,19 @@ from app.model import UnDelete, WatchMe, Sends
 from app.utils import *
 from hashlib import md5
 import time
+import sys, traceback
+
 
 Ud = UnDelete.UnDelete
 Wm = WatchMe.WatchMe
 Sds = Sends.Sends
+
+
+def get_trace():
+    print("Exception in code:")
+    print("-" * 60)
+    traceback.print_exc(file=sys.stdout)
+    print("-" * 60)
 
 
 def build_message(rep, url):
@@ -96,6 +105,7 @@ def proceed():
                 for rep in u["replies"]:
                     # if that reply is not in the result then maybe it have been deleted
                     if rep not in result["replies"]:
+                        print("rep: ", rep)
                         # we send the message to all watcher for the reply that have been deleted
                         print("[-] Missing reply '{}' from '{}' ".format(rep["tweet-text"], rep["author-name"]))
 
@@ -109,7 +119,7 @@ def proceed():
             else:
                 print("[+] Nothing to do...")
         except Exception as es:
-            print(es)
+            get_trace()
 
 
 while True:
@@ -117,6 +127,6 @@ while True:
         # always run lol
         proceed()
     except Exception as es:
-        print(es)
+        get_trace()
 
-    time.sleep(30)
+    time.sleep(15)
