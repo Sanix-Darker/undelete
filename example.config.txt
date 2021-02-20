@@ -1,5 +1,11 @@
 [ud]
-HOST = https://twitter.com/
+# The DB infos to connect with
 DATABASE_HOST = mongodb://127.0.0.1:27017
-DATABASE_NAME = undelete
-TOKEN = ------------------------------------
+DATABASE_NAME = ---------
+
+# For fetching on  Twitter api
+API_KEY = ----------------------
+API_KEY_SECRET = ---------------------------------------------
+
+# For the Telegram Bot
+TOKEN = ---------------------------------------------

@@ -6,3 +6,4 @@ config.txt
 .vscode
 *_pycache__
 *.pyc
+.idea

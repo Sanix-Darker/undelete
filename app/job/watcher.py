@@ -1,7 +1,7 @@
 # We loop all over undeletes
 # if the array of fetch is > array saved, we update the Undelete
 
-# else, we try to get those elements that are not present 
+# else, we try to get those elements that are not present
 
 # Then we send that on all watcher in the Watchme of the Undelete
 from app.model import UnDelete, WatchMe, Sends
@@ -76,7 +76,7 @@ def proceed():
 
             result = get_tweet_and_comments(url, u["chat-id"])
 
-            # some comments are missing, 
+            # some comments are missing,
             # probably deleted...
             # si les 2 tableaux des reply sont differents
             # Je check un a un
@@ -89,12 +89,12 @@ def proceed():
                         Ud().update({
                             "origin-hash": md5(json.dumps(result["origin"]).encode()).hexdigest()
                         }, u)
-                
+
                 # we get all watchers...
                 wms = list(Wm().find_by({
                     "origin-id": get_ud_id(Ud, result)
                 }))
-                
+
                 for rep in u["replies"]:
                     # if that reply is not in the result then maybe it have been deleted
                     if rep not in result["replies"]:
@@ -104,7 +104,7 @@ def proceed():
                         # The message text to respond
                         text = build_message(rep, url)
 
-                        # we check for each of them 
+                        # we check for each of them
                         # if they already received the message
                         for w in wms[0]["chat-ids"]:
                             send_message_and_update_db(w, rep, text)
@@ -115,8 +115,9 @@ def proceed():
 
 while True:
     try:
-        # always run lol 
+        # always run lol
         proceed()
     except:
         pass
-    time.sleep(10)
+    time.sleep(15)
+

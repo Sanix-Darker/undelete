@@ -68,7 +68,7 @@ def get_origin_tweet(url: str, content: str):
     origin_author_name = origin_author \
         .find("span", {"class": "username"}) \
             .get_text()
-    
+
     origin_author_text = origin_tweet \
         .find("div", {"class": "tweet-text"}) \
             .get_text()
