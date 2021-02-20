@@ -119,7 +119,7 @@ def proceed():
             else:
                 print("[+] Nothing to do...")
 
-            time.sleep(5)
+            time.sleep(1)
         except Exception as es:
             get_trace()
 
