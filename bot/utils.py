@@ -1,16 +1,16 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler
-import json
 
-from app.settings import *
+from bot.settings import TOKEN
 from app.utils import *
-from app.model import UnDelete , WatchMe
-
+from app.model import UnDelete, WatchMe
 
 Ud = UnDelete.UnDelete
 Wm = WatchMe.WatchMe
 
+
 def presentation():
     print("[+] Ud-bot started on tg !")
+
 
 def start_callback(bot, update):
     print("[+] start-callback")
@@ -49,10 +49,10 @@ def help_callback(bot, update):
         text="Hello there, \nSend me a tweet link you want me to watch for you !"
     )
 
+
 start_handler = CommandHandler("start", start_callback)
 help_handler = CommandHandler("help", help_callback)
 echo_handler = MessageHandler(callback=echo_callback, filters=None)
-
 
 updater = Updater(token=TOKEN)
 dispatcher = updater.dispatcher

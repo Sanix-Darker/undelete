@@ -1,4 +1,11 @@
-from app.bot.utils import start_handler, help_handler, echo_handler
+from bot.utils import (
+    start_handler,
+    help_handler,
+    echo_handler,
+    presentation,
+    dispatcher,
+    updater
+)
 
 
 if __name__ == "__main__":
